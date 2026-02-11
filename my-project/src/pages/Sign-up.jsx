@@ -14,13 +14,13 @@ const SignUp = () => {
     return (
         <div className="min-h-screen bg-[#09090b] flex items-center justify-center p-6 relative overflow-hidden font-sans antialiased text-slate-200">
             {/* Soft Ambient Glows (Teal/Purple variant for Signup) */}
-            <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-orange-500/10 rounded-full blur-[120px]"></div>
-            <div className="absolute bottom-[-20%] left-[-10%] w-[60%] h-[60%] bg-zinc-500/5 rounded-full blur-[120px]"></div>
+            <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-500/15 rounded-full blur-[120px]"></div>
+            <div className="absolute bottom-[-20%] left-[-10%] w-[60%] h-[60%] bg-purple-900/10 rounded-full blur-[120px]"></div>
 
             <div className="w-full max-w-[480px] bg-zinc-900/50 backdrop-blur-2xl border border-white/10 p-10 rounded-[32px] shadow-2xl relative z-10 transition-all duration-500">
                 {/* Branding */}
                 <div className="flex flex-col items-center mb-8">
-                    <div className="w-16 h-16 bg-gradient-to-tr from-orange-600 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-900/20 mb-6 transform hover:-rotate-6 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-tr from-indigo-600 via-violet-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-900/20 mb-6 transform hover:-rotate-6 transition-transform">
                         <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                         </svg>
@@ -36,7 +36,7 @@ const SignUp = () => {
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full h-14 px-5 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
+                            className="w-full h-14 px-5 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
                             placeholder="John Doe"
                             required
                         />
@@ -48,7 +48,7 @@ const SignUp = () => {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full h-14 px-5 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
+                            className="w-full h-14 px-5 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
                             placeholder="name@domain.com"
                             required
                         />
@@ -60,20 +60,20 @@ const SignUp = () => {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full h-14 px-5 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
+                            className="w-full h-14 px-5 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
                             placeholder="Create a strong password"
                             required
                         />
                     </div>
 
-                    <button type="submit" className="w-full h-14 mt-4 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-orange-900/20 active:scale-[0.98] text-lg">
+                    <button type="submit" className="w-full h-14 mt-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-indigo-900/20 active:scale-[0.98] text-lg">
                         Get Started
                     </button>
                 </form>
 
                 <div className="mt-8 text-center">
                     <p className="text-zinc-500 font-medium">
-                        Already have an account? <Link to="/login" className="text-orange-500 font-bold hover:text-orange-400 underline decoration-2 underline-offset-4">Log in here</Link>
+                        Already have an account? <Link to="/login" className="text-indigo-500 font-bold hover:text-indigo-400 underline decoration-2 underline-offset-4">Log in here</Link>
                     </p>
                 </div>
 

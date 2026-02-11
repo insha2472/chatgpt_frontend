@@ -14,13 +14,13 @@ const Login = () => {
     return (
         <div className="min-h-screen bg-[#09090b] flex items-center justify-center p-6 relative overflow-hidden font-sans antialiased text-slate-200">
             {/* Ambient Glows */}
-            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-orange-500/10 rounded-full blur-[120px]"></div>
-            <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-orange-900/10 rounded-full blur-[120px]"></div>
+            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-indigo-500/15 rounded-full blur-[120px]"></div>
+            <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-purple-900/10 rounded-full blur-[120px]"></div>
 
-            <div className="w-full max-w-[460px] bg-zinc-900/50 backdrop-blur-2xl border border-white/10 p-10 rounded-[32px] shadow-2xl relative z-10 transition-all duration-500 hover:border-orange-500/20">
+            <div className="w-full max-w-[460px] bg-zinc-900/50 backdrop-blur-2xl border border-white/10 p-10 rounded-[32px] shadow-2xl relative z-10 transition-all duration-500 hover:border-indigo-500/20">
                 {/* Branding */}
                 <div className="flex flex-col items-center mb-10">
-                    <div className="w-16 h-16 bg-gradient-to-tr from-orange-600 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-900/20 mb-6 transform hover:rotate-6 transition-transform">
+                    <div className="w-16 h-16 bg-gradient-to-tr from-indigo-600 via-violet-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-900/20 mb-6 transform hover:rotate-6 transition-transform">
                         <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                         </svg>
@@ -33,7 +33,7 @@ const Login = () => {
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-zinc-300 ml-1">Email address</label>
                         <div className="relative group">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-orange-500 transition-colors">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-indigo-500 transition-colors">
                                 <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                     <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
@@ -42,7 +42,7 @@ const Login = () => {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full h-14 pl-12 pr-4 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
+                                className="w-full h-14 pl-12 pr-4 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
                                 placeholder="name@domain.com"
                                 required
                             />
@@ -52,10 +52,10 @@ const Login = () => {
                     <div className="space-y-2">
                         <div className="flex justify-between items-center ml-1">
                             <label className="text-sm font-bold text-zinc-300">Password</label>
-                            <Link to="#" className="text-xs font-bold text-orange-500 hover:text-orange-400 transition-colors">Forgot password?</Link>
+                            <Link to="#" className="text-xs font-bold text-indigo-500 hover:text-indigo-400 transition-colors">Forgot password?</Link>
                         </div>
                         <div className="relative group">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-orange-500 transition-colors">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-indigo-500 transition-colors">
                                 <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                     <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
@@ -64,7 +64,7 @@ const Login = () => {
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full h-14 pl-12 pr-12 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
+                                className="w-full h-14 pl-12 pr-12 bg-zinc-800/40 border border-zinc-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/50 transition-all text-white text-lg placeholder:text-zinc-600"
                                 placeholder="••••••••"
                                 required
                             />
@@ -78,7 +78,7 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <button type="submit" className="w-full h-14 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-orange-900/20 active:scale-[0.98] text-lg flex items-center justify-center gap-2 group">
+                    <button type="submit" className="w-full h-14 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-indigo-900/20 active:scale-[0.98] text-lg flex items-center justify-center gap-2 group">
                         Sign In
                         <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -88,7 +88,7 @@ const Login = () => {
 
                 <div className="mt-8 text-center">
                     <p className="text-zinc-500 font-medium">
-                        Need an account? <Link to="/signup" className="text-orange-500 font-bold hover:text-orange-400 underline decoration-2 underline-offset-4">Create one for free</Link>
+                        Need an account? <Link to="/signup" className="text-indigo-500 font-bold hover:text-indigo-400 underline decoration-2 underline-offset-4">Create one for free</Link>
                     </p>
                 </div>
 
