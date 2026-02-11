@@ -11,18 +11,20 @@ import Signup from './pages/Sign-up.jsx'
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-[#fafafa]">
-        <Header />
-        <main className="flex-grow pt-20">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-          </Routes>
-        </main>
-        <Footer />
+      <div className="min-h-screen bg-white text-gray-900 selection:bg-orange-100 selection:text-orange-900">
+        <div className="relative flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow pt-20">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </div>
     </Router>
   )
