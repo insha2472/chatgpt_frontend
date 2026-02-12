@@ -43,12 +43,8 @@ const Dashboard = () => {
         if (storedName) setUserName(storedName);
     }, [navigate]);
 
-    // Scroll to bottom
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [currentChat?.messages, isTyping]);
+    // Scroll to bottom (REMOVED as requested)
+    // useEffect(() => { ... }, [currentChat?.messages, isTyping]);
 
     const handleNewChat = () => {
         setCurrentChat(null);
@@ -204,20 +200,20 @@ const Dashboard = () => {
             <aside className={`fixed lg:relative z-20 glass h-full sidebar-transition flex flex-col ${isSidebarOpen ? 'w-72 translate-x-0' : 'w-0 -translate-x-full lg:w-0'} border-r border-white/5`}>
                 <div className="p-5 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center glow-purple">
+                        <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center glow-purple">
                             <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM8.5 8c.83 0 1.5.67 1.5 1.5S9.33 11 8.5 11 7 10.33 7 9.5 7.67 8 8.5 8zm7 0c.83 0 1.5.67 1.5 1.5S16.33 11 15.5 11 14 10.33 14 9.5 14.67 8 15.5 8zM12 18c-2.21 0-4-1.79-4-4h8c0 2.21-1.79 4-4 4z" /></svg>
                         </div>
-                        <span className="font-black text-xl tracking-tighter text-neon-purple">ZIGGY</span>
+                        <span className="font-bold text-xl tracking-tighter text-neon-purple">ZIGGY</span>
                     </div>
                 </div>
 
                 <div className="px-4 mb-4">
                     <button
                         onClick={handleNewChat}
-                        className="flex items-center gap-3 w-full p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all text-sm font-bold text-zinc-300"
+                        className="flex items-center gap-3 w-full p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all text-xs font-bold text-zinc-300"
                     >
-                        <svg className="w-5 h-5 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
-                        New Voyage
+                        <svg className="w-4 h-4 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+                        New History
                     </button>
                 </div>
 
@@ -226,9 +222,9 @@ const Dashboard = () => {
                         <div key={chat.id} className="group relative">
                             <button
                                 onClick={() => loadChat(chat)}
-                                className={`w-full text-left px-3 py-3 rounded-xl text-sm transition-all flex items-center gap-3 ${currentChat?.id === chat.id ? 'bg-electric-purple/10 text-electric-purple border border-electric-purple/30' : 'text-zinc-500 hover:bg-white/5 border border-transparent'}`}
+                                className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all flex items-center gap-3 ${currentChat?.id === chat.id ? 'bg-electric-purple/10 text-electric-purple border border-electric-purple/20' : 'text-zinc-500 hover:bg-white/5 border border-transparent'}`}
                             >
-                                <span className="truncate font-bold flex-grow">{chat.title}</span>
+                                <span className="truncate font-semibold flex-grow">{chat.title}</span>
                             </button>
                             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button onClick={(e) => handleRenameChat(chat.id, e)} className="p-1 hover:text-electric-cyan"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" strokeWidth="2" /></svg></button>
@@ -238,14 +234,14 @@ const Dashboard = () => {
                     ))}
                 </div>
 
-                <div className="p-4 border-t border-white/5">
-                    <button onClick={() => setShowProfile(!showProfile)} className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-white/5 transition-colors">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-electric-purple to-electric-blue flex items-center justify-center text-sm font-black ring-1 ring-white/20">
+                <div className="p-4 border-t border-white/5 bg-black/20">
+                    <button onClick={() => setShowProfile(!showProfile)} className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-white/5 transition-colors group">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-black ring-1 ring-white/10 group-hover:glow-purple transition-all">
                             {getAvatarLetter(userName)}
                         </div>
                         <div className="flex-grow text-left">
-                            <div className="text-sm font-black tracking-tight">{userName}</div>
-                            <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Master Explorer</div>
+                            <div className="text-sm font-bold tracking-tight text-zinc-100">{userName}</div>
+                            <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Profile Card</div>
                         </div>
                     </button>
                     {showProfile && (
@@ -257,36 +253,36 @@ const Dashboard = () => {
             </aside>
 
             {/* Content Area */}
-            <main className="relative z-10 flex-grow flex flex-col h-full sidebar-transition">
-                <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-black/40 backdrop-blur-xl">
+            <main className="relative z-10 flex-grow flex flex-col h-screen overflow-hidden sidebar-transition">
+                <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-black/40 backdrop-blur-xl shrink-0">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 text-electric-cyan glow-cyan transition-all"
+                            className="p-2 hover:bg-white/5 rounded-lg transition-colors text-zinc-400 hover:text-electric-cyan"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
                             </svg>
                         </button>
-                        <h2 className="font-black text-lg tracking-tight text-zinc-100">{currentChat?.title || 'Launch Terminal'}</h2>
+                        <h2 className="font-bold text-sm tracking-tight text-zinc-400 uppercase tracking-[0.1em]">{currentChat?.title || 'Ziggy Terminal'}</h2>
                     </div>
                 </header>
 
-                <div className="flex-grow overflow-y-auto custom-scrollbar p-8 space-y-10">
+                <div className="flex-grow overflow-y-auto custom-scrollbar p-6 space-y-6">
                     {!currentChat && (
-                        <div className="h-full flex flex-col items-center justify-center text-center max-w-2xl mx-auto">
-                            <div className="w-24 h-24 bg-white/5 rounded-[2rem] flex items-center justify-center animate-pulse mb-8 border border-white/10 glow-purple">
-                                <svg className="w-12 h-12 text-electric-purple" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM8.5 8c.83 0 1.5.67 1.5 1.5S9.33 11 8.5 11 7 10.33 7 9.5 7.67 8 8.5 8zm7 0c.83 0 1.5.67 1.5 1.5S16.33 11 15.5 11 14 10.33 14 9.5 14.67 8 15.5 8zM12 18c-2.21 0-4-1.79-4-4h8c0 2.21-1.79 4-4 4z" /></svg>
+                        <div className="h-full flex flex-col items-center justify-center text-center max-w-xl mx-auto pb-20">
+                            <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-white/10 glow-purple">
+                                <svg className="w-10 h-10 text-electric-purple" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM8.5 8c.83 0 1.5.67 1.5 1.5S9.33 11 8.5 11 7 10.33 7 9.5 7.67 8 8.5 8zm7 0c.83 0 1.5.67 1.5 1.5S16.33 11 15.5 11 14 10.33 14 9.5 14.67 8 15.5 8zM12 18c-2.21 0-4-1.79-4-4h8c0 2.21-1.79 4-4 4z" /></svg>
                             </div>
-                            <h1 className="text-5xl font-black tracking-tighter text-white mb-4 bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">Hello, {userName}</h1>
-                            <p className="text-zinc-500 text-xl font-medium">Ziggy is online and ready for neural link. What shall we discover?</p>
+                            <h1 className="text-4xl font-black tracking-tighter text-white mb-2">Welcome, {userName}</h1>
+                            <p className="text-zinc-500 text-base font-medium">Ziggy is ready. Transmit your query below.</p>
                         </div>
                     )}
 
                     {currentChat?.messages.map((msg, idx) => (
                         <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[80%] p-5 rounded-3xl shadow-2xl ${msg.role === 'user' ? 'bg-electric-blue/20 border border-electric-blue/40 text-blue-50' : 'glass-electric border border-white/5 text-zinc-200'}`}>
-                                <div className="prose prose-invert prose-p:leading-relaxed max-w-none text-sm font-medium">
+                            <div className={`max-w-[85%] p-4 rounded-2xl ${msg.role === 'user' ? 'bg-indigo-600/10 border border-indigo-500/20 text-indigo-50' : 'bg-white/5 border border-white/5 text-zinc-200 shadow-xl'}`}>
+                                <div className="prose prose-invert prose-sm prose-p:leading-relaxed max-w-none font-medium">
                                     <ReactMarkdown>{msg.content}</ReactMarkdown>
                                 </div>
                             </div>
@@ -294,37 +290,38 @@ const Dashboard = () => {
                     ))}
                     {isTyping && (
                         <div className="flex justify-start">
-                            <div className="glass-electric p-5 rounded-3xl border border-white/5 flex gap-2">
-                                <div className="w-2 h-2 bg-electric-cyan rounded-full animate-bounce"></div>
-                                <div className="w-2 h-2 bg-electric-cyan rounded-full animate-bounce delay-100"></div>
-                                <div className="w-2 h-2 bg-electric-cyan rounded-full animate-bounce delay-200"></div>
+                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 flex gap-1.5">
+                                <div className="w-1.5 h-1.5 bg-electric-cyan rounded-full animate-bounce"></div>
+                                <div className="w-1.5 h-1.5 bg-electric-cyan rounded-full animate-bounce delay-100"></div>
+                                <div className="w-1.5 h-1.5 bg-electric-cyan rounded-full animate-bounce delay-200"></div>
                             </div>
                         </div>
                     )}
                     <div ref={messagesEndRef} />
                 </div>
 
-                <footer className="p-8">
-                    <div className="max-w-4xl mx-auto relative">
-                        <div className="absolute -inset-0.5 bg-gradient-to-r from-electric-purple to-electric-cyan rounded-3xl blur opacity-20 group-hover:opacity-40 transition"></div>
-                        <div className="relative flex items-end gap-4 glass p-3 rounded-3xl border border-white/10">
+                <footer className="p-6 shrink-0 bg-gradient-to-t from-black/40 to-transparent">
+                    <div className="max-w-3xl mx-auto relative group">
+                        <div className="absolute -inset-0.5 bg-electric-purple/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+                        <div className="relative flex items-end gap-3 glass p-2 rounded-2xl border border-white/10">
                             <textarea
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
-                                placeholder="Transmit data to Ziggy..."
-                                className="flex-grow bg-transparent border-none focus:ring-0 text-white placeholder:text-zinc-700 resize-none max-h-48 py-3 px-4 custom-scrollbar font-medium"
+                                placeholder="Transmit message to Ziggy..."
+                                className="flex-grow bg-transparent border-none focus:ring-0 text-white placeholder:text-zinc-700 resize-none max-h-32 py-2.5 px-3 custom-scrollbar font-medium text-sm"
                                 rows={1}
                             />
                             <button
                                 onClick={handleSendMessage}
                                 disabled={!input.trim() || isTyping}
-                                className="btn-electric p-4 rounded-2xl disabled:opacity-30 flex items-center justify-center"
+                                className="w-10 h-10 bg-white text-black rounded-xl disabled:opacity-30 flex items-center justify-center hover:bg-electric-cyan hover:text-black transition-colors shrink-0"
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                             </button>
                         </div>
                     </div>
+                    <p className="text-center text-[9px] text-zinc-600 mt-4 uppercase tracking-[0.3em] font-bold">Ziggy Neural Link v2.5 • Unified Protocol</p>
                 </footer>
             </main>
         </div>
