@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../Context/AuthContext';
 
 const SignUp = () => {
     const [name, setName] = useState('');
@@ -8,6 +9,7 @@ const SignUp = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -28,8 +30,14 @@ const SignUp = () => {
                 throw new Error(data.detail || 'Signup failed');
             }
 
-            // Success - Redirect to login
-            navigate('/login');
+            const data = await response.json();
+            // Assuming signup returns same data as login: {access_token, user_name, ...}
+            if (data.access_token) {
+                login(data);
+                navigate('/dashboard');
+            } else {
+                navigate('/login');
+            }
         } catch (err) {
             setError(err.message);
         } finally {
@@ -38,7 +46,7 @@ const SignUp = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center p-6 font-sans antialiased text-white">
+        <div className="h-full flex flex-col items-center justify-center p-6 font-sans antialiased text-white">
             {/* Glassmorphism Container */}
             <div className="w-full max-w-[400px] relative z-10 bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl">
                 <div className="flex flex-col items-center mb-10">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../Context/AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ const Login = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,16 +31,7 @@ const Login = () => {
             }
 
             const data = await response.json();
-
-            // Store tokens and name
-            localStorage.setItem('access_token', data.access_token);
-            localStorage.setItem('token_type', data.token_type);
-            localStorage.setItem('user_name', data.user_name || 'Ziggy User');
-            if (data.refresh_token) {
-                localStorage.setItem('refresh_token', data.refresh_token);
-            }
-
-            // Redirect to dashboard
+            login(data);
             navigate('/dashboard');
         } catch (err) {
             setError(err.message);
@@ -48,7 +41,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center p-6 font-sans antialiased text-white">
+        <div className="h-full flex flex-col items-center justify-center p-6 font-sans antialiased text-white">
             {/* Glassmorphism Container */}
             <div className="w-full max-w-[400px] relative z-10 bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl">
                 <div className="flex flex-col items-center mb-10">
