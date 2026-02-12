@@ -18,30 +18,43 @@ const Dashboard = () => {
     const fileInputRef = useRef(null);
     const messagesEndRef = useRef(null);
 
-    // Load history and user data from localStorage on mount
+    // Load history and user data from localStorage/backend on mount
     useEffect(() => {
-        try {
-            const savedHistory = localStorage.getItem('chatgpt_clone_history');
-            if (savedHistory) {
-                const parsed = JSON.parse(savedHistory);
-                if (Array.isArray(parsed)) {
-                    setHistory(parsed);
+        const fetchHistory = async () => {
+            const token = localStorage.getItem('access_token');
+            if (!token) return;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/chat/history', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setHistory(data);
+                    localStorage.setItem('chatgpt_clone_history', JSON.stringify(data));
                 } else {
-                    setHistory([]);
+                    // Try to load from localStorage as fallback
+                    const savedHistory = localStorage.getItem('chatgpt_clone_history');
+                    if (savedHistory) setHistory(JSON.parse(savedHistory));
                 }
+            } catch (err) {
+                console.error("Failed to fetch backend history", err);
+                const savedHistory = localStorage.getItem('chatgpt_clone_history');
+                if (savedHistory) setHistory(JSON.parse(savedHistory));
             }
-        } catch (e) {
-            console.error("Failed to parse history", e);
-            setHistory([]);
-        }
+        };
+
+        fetchHistory();
 
         const storedName = localStorage.getItem('user_name');
         if (storedName) {
             setUserName(storedName);
         }
-    }, []);
+    }, [navigate]);
 
-    // Save history to localStorage whenever it changes
+    // Unified storage: History is saved to both localStorage (for fast UI) and Backend (for persistence)
     useEffect(() => {
         if (Array.isArray(history)) {
             localStorage.setItem('chatgpt_clone_history', JSON.stringify(history));
@@ -67,21 +80,51 @@ const Dashboard = () => {
             content: input,
             files: attachedFiles.map(f => ({ name: f.name, type: f.type }))
         };
+        const token = localStorage.getItem('access_token');
+        let session_id = currentChat?.id;
         let updatedChat;
 
-        // Optimistic UI update
-        if (currentChat) {
+        // Create history session if it doesn't exist
+        if (!currentChat) {
+            try {
+                const sessionResponse = await fetch('http://127.0.0.1:8000/chat/history', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ title: input.substring(0, 30) + (input.length > 30 ? '...' : '') })
+                });
+                if (sessionResponse.ok) {
+                    const sessionData = await sessionResponse.json();
+                    session_id = sessionData.id;
+                    const newChat = { ...sessionData, messages: [newMessage] };
+                    setCurrentChat(newChat);
+                    setHistory([newChat, ...history]);
+                    updatedChat = newChat;
+                }
+            } catch (err) {
+                console.error("Failed to create history", err);
+            }
+        } else {
             updatedChat = { ...currentChat, messages: [...currentChat.messages, newMessage] };
             setCurrentChat(updatedChat);
-        } else {
-            updatedChat = {
-                id: Date.now(),
-                title: input.substring(0, 30) + (input.length > 30 ? '...' : ''),
-                messages: [newMessage],
-                timestamp: new Date().toISOString()
-            };
-            setCurrentChat(updatedChat);
-            setHistory([updatedChat, ...history]);
+        }
+
+        // Save user message to backend
+        if (session_id) {
+            try {
+                await fetch(`http://127.0.0.1:8000/chat/history/${session_id}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(newMessage)
+                });
+            } catch (err) {
+                console.error("Failed to save user message", err);
+            }
         }
 
         setInput('');
@@ -117,6 +160,22 @@ const Dashboard = () => {
                 return prev.map(chat => chat.id === finalChat.id ? finalChat : chat);
             });
 
+            // Save assistant message to backend
+            if (session_id) {
+                try {
+                    await fetch(`http://127.0.0.1:8000/chat/history/${session_id}/messages`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(assistantMessage)
+                    });
+                } catch (err) {
+                    console.error("Failed to save assistant message", err);
+                }
+            }
+
         } catch (error) {
             console.error("Chat error:", error);
             const errorMessage = { role: 'assistant', content: "Sorry, I'm having trouble connecting to my brain right now! 🤯" };
@@ -138,8 +197,25 @@ const Dashboard = () => {
         navigate('/login');
     };
 
-    const loadChat = (chat) => {
-        setCurrentChat(chat);
+    const loadChat = async (chat) => {
+        const token = localStorage.getItem('access_token');
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/chat/history/${chat.id}/messages`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.ok) {
+                const messages = await response.json();
+                setCurrentChat({ ...chat, messages });
+            } else {
+                // If backend fails, check if we have messages in local history
+                setCurrentChat(chat);
+            }
+        } catch (err) {
+            console.error("Failed to load chat messages", err);
+            setCurrentChat(chat);
+        }
         setIsSidebarOpen(false);
     };
 
