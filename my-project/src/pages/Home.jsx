@@ -5,6 +5,12 @@ import ReactMarkdown from "react-markdown";
 const Home = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [userName, setUserName] = useState('Explorer');
+
+  useEffect(() => {
+    const storedName = localStorage.getItem('user_name');
+    if (storedName) setUserName(storedName);
+  }, []);
   const [attachedFiles, setAttachedFiles] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [activeMode, setActiveMode] = useState(null); // 'search', 'study', 'image'
@@ -46,7 +52,7 @@ const Home = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: query + (attachedFiles.length > 0 ? ` (Attached files: ${attachedFiles.map(f => f.name).join(", ")})` : ""),
-          system_prompt: `You are Ziggy, a friendly AI assistant. The user is a guest explorer on our home page. ${activeMode === 'search' ? 'Current mode: SEARCH. Provide detailed web-style search results.' : activeMode === 'study' ? 'Current mode: STUDY. Act as a tutor, explaining concepts simply.' : activeMode === 'image' ? 'Current mode: IMAGE GENERATION. Describe vivid images based on user input.' : ''}`
+          system_prompt: `You are Ziggy, a friendly AI assistant. The user's name is ${userName}. ${activeMode === 'search' ? 'Current mode: SEARCH. Provide detailed web-style search results.' : activeMode === 'study' ? 'Current mode: STUDY. Act as a tutor, explaining concepts simply.' : activeMode === 'image' ? 'Current mode: IMAGE GENERATION. Describe vivid images based on user input.' : ''}`
         }),
       });
 
