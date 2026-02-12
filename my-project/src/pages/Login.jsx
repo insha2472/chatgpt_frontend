@@ -53,8 +53,11 @@ const Login = () => {
             <div className="w-full max-w-[400px] relative z-10 bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl">
                 <div className="flex flex-col items-center mb-10">
                     <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center mb-6 shadow-2xl shadow-indigo-500/20">
-                        {/* Ziggy Logo Placeholder (Simple Robot) */}
-                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 9a2 2 0 100-4 2 2 0 000 4zm4 0a2 2 0 100-4 2 2 0 000 4z" /></svg>
+                        {/* Ziggy Logo (Cat) */}
+                        <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM8.5 8c.83 0 1.5.67 1.5 1.5S9.33 11 8.5 11 7 10.33 7 9.5 7.67 8 8.5 8zm7 0c.83 0 1.5.67 1.5 1.5S16.33 11 15.5 11 14 10.33 14 9.5 14.67 8 15.5 8zM12 18c-2.21 0-4-1.79-4-4h8c0 2.21-1.79 4-4 4z" />
+                            <path d="M6 6L4 2h4l-2 4zM18 6l2-4h-4l2 4z" />
+                        </svg>
                     </div>
                     <h1 className="text-2xl font-bold text-white tracking-tight">Welcome back</h1>
                     <p className="text-sm text-zinc-400 mt-2">Log in to your Ziggy account</p>
