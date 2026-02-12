@@ -6,12 +6,13 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Login from './pages/Login'
 import SignUp from './pages/Sign-up'
+import Dashboard from './pages/Dashboard'
 import './App.css'
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-[#0b0b0d] text-slate-200">
         <Header />
         <main className="flex-grow pt-20">
           <Routes>
@@ -20,6 +21,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </main>
         <Footer />

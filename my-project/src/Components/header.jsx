@@ -1,20 +1,18 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Header = () => {
-    const location = useLocation();
-    const isAuth = ["/login", "/signup"].includes(location.pathname);
-
     return (
-        <header className="fixed top-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-8 z-[100] transition-all">
+        <header className="fixed top-0 left-0 right-0 h-20 bg-[#1a1a2e]/80 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-8 z-[100] transition-all">
             <div className="flex items-center gap-10">
                 <Link to="/" className="flex items-center gap-2.5 group">
-                    <div className="w-9 h-9 bg-gray-900 rounded-lg flex items-center justify-center group-hover:bg-orange-600 transition-colors">
+                    <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-indigo-500/20">
+                        {/* Ziggy Logo (Small) */}
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <span className="text-lg font-bold text-gray-900 tracking-tight">GPT Project</span>
+                    <span className="text-lg font-bold text-white tracking-tight drop-shadow-md">Ziggy</span>
                 </Link>
 
                 <nav className="hidden md:flex items-center gap-8">
@@ -22,7 +20,7 @@ const Header = () => {
                         <Link
                             key={item}
                             to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                            className="text-sm font-semibold text-gray-500 hover:text-orange-600 transition-colors"
+                            className="text-sm font-semibold text-zinc-400 hover:text-white transition-colors hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
                         >
                             {item}
                         </Link>
@@ -31,22 +29,18 @@ const Header = () => {
             </div>
 
             <div className="flex items-center gap-4">
-                {!isAuth && (
-                    <>
-                        <Link
-                            to="/login"
-                            className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-black transition-all"
-                        >
-                            Log in
-                        </Link>
-                        <Link
-                            to="/signup"
-                            className="px-5 py-2.5 text-sm font-bold bg-gray-900 text-white hover:bg-orange-600 rounded-xl transition-all shadow-md active:scale-95"
-                        >
-                            Sign up
-                        </Link>
-                    </>
-                )}
+                <Link
+                    to="/login"
+                    className="px-4 py-2 text-sm font-semibold text-zinc-400 hover:text-white transition-all"
+                >
+                    Log in
+                </Link>
+                <Link
+                    to="/signup"
+                    className="px-5 py-2.5 text-sm font-bold bg-white text-black hover:bg-zinc-200 rounded-xl transition-all shadow-lg hover:shadow-white/20 active:scale-95"
+                >
+                    Sign up
+                </Link>
             </div>
         </header>
     );
