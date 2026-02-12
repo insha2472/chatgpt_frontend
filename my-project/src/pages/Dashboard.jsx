@@ -8,12 +8,11 @@ const Dashboard = () => {
     const [currentChat, setCurrentChat] = useState(null);
     const [input, setInput] = useState('');
     const [showProfile, setShowProfile] = useState(false);
+    const [activeMenuId, setActiveMenuId] = useState(null); // For history item menus
     const [userName, setUserName] = useState('Explorer');
     const [isTyping, setIsTyping] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [attachedFiles, setAttachedFiles] = useState([]);
-    const [activeMode, setActiveMode] = useState(null);
-    const fileInputRef = useRef(null);
     const messagesEndRef = useRef(null);
 
     // Load history and user data
@@ -42,6 +41,16 @@ const Dashboard = () => {
         const storedName = localStorage.getItem('user_name');
         if (storedName) setUserName(storedName);
     }, [navigate]);
+
+    // Close menus when clicking outside
+    useEffect(() => {
+        const handleClickOutside = () => {
+            setActiveMenuId(null);
+            setShowProfile(false);
+        };
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
 
     const handleNewChat = () => {
         setCurrentChat(null);
@@ -104,7 +113,7 @@ const Dashboard = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: userMsg.content,
-                    system_prompt: `You are Zigi, a helpful AI assistant. The user's name is ${userName}.`
+                    system_prompt: `You are Ziggy, a helpful AI assistant. The user's name is ${userName}.`
                 }),
             });
 
@@ -129,7 +138,7 @@ const Dashboard = () => {
 
         } catch (err) {
             console.error("Chat Error", err);
-            const errMsg = { role: 'assistant', content: "Zigi had a hiccup! ⚡️ Try again?" };
+            const errMsg = { role: 'assistant', content: "Ziggy had a hiccup! ⚡️ Try again?" };
             setCurrentChat(prev => ({ ...prev, messages: prev ? [...prev.messages, errMsg] : [errMsg] }));
         } finally {
             setIsTyping(false);
@@ -191,10 +200,40 @@ const Dashboard = () => {
 
     const getAvatarLetter = (name) => (name ? name.charAt(0).toUpperCase() : 'Z');
 
+    const InputComponent = ({ centered }) => (
+        <div className={`w-full max-w-3xl px-4 ${centered ? '' : 'mx-auto'}`}>
+            <div className={`relative flex items-end w-full p-3 bg-[#2f2f2f] rounded-[26px] shadow-lg border border-white/5 focus-within:ring-1 focus-within:ring-white/10 focus-within:bg-[#2f2f2f] hover:border-white/10 transition-colors`}>
+                <button className="p-2 mr-2 text-gray-400 hover:text-white bg-[#212121] rounded-full transition-colors self-end mb-1">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                </button>
+                <textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
+                    placeholder="Message Ziggy"
+                    className="flex-1 max-h-[200px] min-h-[44px] py-3 bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-500 resize-none overflow-y-auto"
+                    rows={1}
+                    style={{ height: 'auto' }}
+                />
+                <button
+                    onClick={handleSendMessage}
+                    disabled={!input.trim() || isTyping}
+                    className={`p-2 ml-2 mb-1 rounded-full transition-all duration-200 ${input.trim() ? 'bg-white text-black hover:bg-gray-200' : 'bg-[#424242] text-gray-600 cursor-not-allowed'}`}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M12 5l7 7-7 7" /></svg>
+                </button>
+            </div>
+            <div className="text-center text-xs text-gray-500 mt-2 font-normal">
+                Ziggy can make mistakes. Check important info.
+            </div>
+        </div>
+    );
+
+    const isChatEmpty = !currentChat || currentChat.messages.length === 0;
 
     return (
         <div className="flex h-screen w-screen bg-[#212121] text-gray-100 font-sans overflow-hidden">
-            {/* Sidebar - Fixed Left, Toggleable */}
+            {/* Sidebar */}
             <div
                 className={`flex-shrink-0 bg-[#171717] flex flex-col transition-all duration-300 ease-in-out relative ${isSidebarOpen ? 'w-[260px]' : 'w-0 overflow-hidden'}`}
                 style={{ visibility: isSidebarOpen ? 'visible' : 'hidden' }}
@@ -220,14 +259,35 @@ const Dashboard = () => {
                     <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-2 space-y-2 custom-scrollbar">
                         <div className="px-2 text-xs font-semibold text-gray-500 py-1">Today</div>
                         {history.map(chat => (
-                            <button
-                                key={chat.id}
-                                onClick={() => loadChat(chat)}
-                                className={`group relative w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center pr-2 ${currentChat?.id === chat.id ? 'bg-[#212121] text-white' : 'text-gray-300 hover:bg-[#212121]'}`}
-                            >
-                                <span className="truncate flex-1 relative z-10">{chat.title}</span>
-                                <div className={`absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#171717] to-transparent group-hover:from-[#212121] ${currentChat?.id === chat.id ? 'from-[#212121]' : ''}`}></div>
-                            </button>
+                            <div key={chat.id} className="relative group">
+                                <button
+                                    onClick={() => loadChat(chat)}
+                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center pr-8 ${currentChat?.id === chat.id ? 'bg-[#212121] text-white' : 'text-gray-300 hover:bg-[#212121]'}`}
+                                >
+                                    <span className="truncate flex-1 relative z-10">{chat.title}</span>
+                                    {currentChat?.id === chat.id && <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#212121] to-transparent"></div>}
+                                </button>
+                                {/* Kebab Menu Button */}
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); setActiveMenuId(activeMenuId === chat.id ? null : chat.id); }}
+                                    className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-white rounded opacity-0 group-hover:opacity-100 transition-opacity ${activeMenuId === chat.id ? 'opacity-100' : ''}`}
+                                >
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /></svg>
+                                </button>
+                                {/* Dropdown Menu */}
+                                {activeMenuId === chat.id && (
+                                    <div className="absolute right-0 top-full mt-1 w-32 bg-[#2f2f2f] border border-white/10 rounded-lg shadow-xl z-50 overflow-hidden py-1">
+                                        <button onClick={(e) => handleRenameChat(chat.id, e)} className="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-[#424242] flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                            Rename
+                                        </button>
+                                        <button onClick={(e) => handleDeleteChat(chat.id, e)} className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#424242] flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            Delete
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         ))}
                     </div>
 
@@ -235,7 +295,7 @@ const Dashboard = () => {
                     <div className="p-3 border-t border-white/5 mt-auto bg-[#171717] shrink-0">
                         <div className="relative">
                             <button
-                                onClick={() => setShowProfile(!showProfile)}
+                                onClick={(e) => { e.stopPropagation(); setShowProfile(!showProfile); }}
                                 className="flex items-center gap-3 w-full px-2 py-2.5 rounded-xl hover:bg-[#212121] transition-colors text-left"
                             >
                                 <div className="w-8 h-8 rounded-full bg-white text-[#171717] flex items-center justify-center font-semibold text-sm tracking-tighter">
@@ -247,6 +307,10 @@ const Dashboard = () => {
 
                             {showProfile && (
                                 <div className="absolute bottom-full left-0 w-full mb-2 bg-[#2f2f2f] border border-white/5 rounded-xl shadow-xl overflow-hidden py-1 z-50">
+                                    <button className="w-full text-left px-4 py-3 text-sm text-gray-200 hover:bg-[#424242] transition-colors flex items-center gap-2 border-b border-white/5">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                        Settings
+                                    </button>
                                     <button
                                         onClick={handleLogout}
                                         className="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-[#424242] transition-colors flex items-center gap-2"
@@ -266,6 +330,15 @@ const Dashboard = () => {
                 {/* Header - Minimal, Toggle + Model Name */}
                 <header className="h-12 flex items-center px-3 shrink-0 absolute top-0 w-full z-10 bg-transparent">
                     <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="p-2 text-gray-400 hover:text-white rounded-md transition-colors"
+                            title={isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
                         <button className="flex items-center gap-1.5 px-3 py-2 text-lg font-semibold text-gray-200 hover:bg-[#2f2f2f] rounded-lg transition-colors cursor-pointer">
                             <span className="opacity-90">Ziggy</span>
                             <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
@@ -274,17 +347,20 @@ const Dashboard = () => {
                 </header>
 
                 {/* Content Container */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth flex flex-col items-center w-full">
-                    {!currentChat || currentChat.messages.length === 0 ? (
-                        /* Empty State - Perfectly Centered */
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+                <div className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth flex flex-col w-full">
+                    {isChatEmpty ? (
+                        /* Empty State - Centered Input */
+                        <div className="flex-1 flex flex-col items-center justify-center p-8 w-full max-w-3xl mx-auto">
                             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm mb-6">
                                 <div className="text-xl text-black font-black">Z</div>
                             </div>
                             <h2 className="text-2xl font-semibold text-white mb-8">What can I help with?</h2>
 
+                            {/* Centered Input */}
+                            <InputComponent centered={true} />
+
                             {/* Suggestion Grid */}
-                            <div className="grid grid-cols-2 gap-4 w-full max-w-2xl px-4">
+                            <div className="grid grid-cols-2 gap-4 w-full px-4 mt-8">
                                 {["Plan a trip", "Help me write", "Summarize text", "Code something"].map((text, i) => (
                                     <button
                                         key={i}
@@ -298,10 +374,10 @@ const Dashboard = () => {
                         </div>
                     ) : (
                         /* Message Stream - Left Aligned with User Box */
-                        <div className="w-full max-w-3xl px-5 pt-20 pb-40 flex flex-col gap-6">
+                        <div className="w-full max-w-3xl mx-auto px-5 pt-20 pb-40 flex flex-col gap-6">
                             {currentChat.messages.map((msg, idx) => (
                                 <div key={idx} className="w-full flex justify-start">
-                                    <div className="flex gap-4 w-full max-w-3xl mx-auto">
+                                    <div className="flex gap-4 w-full">
                                         <div className="flex-shrink-0 flex flex-col relative items-start">
                                             {msg.role === 'assistant' ? (
                                                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-medium shadow-sm">Z</div>
@@ -309,7 +385,7 @@ const Dashboard = () => {
                                                 <div className="w-8 h-8 bg-[#543636] rounded-full flex items-center justify-center text-white text-sm font-medium">{getAvatarLetter(userName)}</div>
                                             )}
                                         </div>
-                                        <div className={`relative px-5 py-3.5 rounded-2xl ${msg.role === 'user' ? 'bg-[#2f2f2f] text-white' : 'text-gray-100'}`}>
+                                        <div className={`relative px-5 py-3.5 rounded-2xl ${msg.role === 'user' ? 'bg-[#2f2f2f] text-white' : 'text-gray-100 pl-0'}`}>
                                             <div className="font-semibold mb-1 text-xs opacity-50 uppercase tracking-wider">{msg.role === 'assistant' ? 'Ziggy' : 'You'}</div>
                                             <div className="prose prose-invert prose-p:leading-7 prose-pre:bg-[#0d0d0d] prose-pre:rounded-lg prose-pre:border prose-pre:border-white/10 max-w-none">
                                                 <ReactMarkdown>{msg.content}</ReactMarkdown>
@@ -335,38 +411,14 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                {/* Fixed Input Area */}
-                <div className="absolute bottom-0 left-0 w-full pt-10 pb-6 px-4 bg-gradient-to-t from-[#212121] via-[#212121] to-transparent z-20">
-                    <div className="max-w-3xl mx-auto">
-                        <div className="relative flex items-end w-full p-3 bg-[#2f2f2f] rounded-[26px] shadow-lg border border-white/5 focus-within:ring-1 focus-within:ring-white/10 focus-within:bg-[#2f2f2f] hover:border-white/10 transition-colors">
-                            <button className="p-2 mr-2 text-gray-400 hover:text-white bg-[#212121] rounded-full transition-colors self-end mb-1">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                            </button>
-                            <textarea
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
-                                placeholder="Message Ziggy"
-                                className="flex-1 max-h-[200px] min-h-[44px] py-3 bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-500 resize-none overflow-y-auto"
-                                rows={1}
-                                style={{ height: 'auto' }}
-                            />
-                            <button
-                                onClick={handleSendMessage}
-                                disabled={!input.trim() || isTyping}
-                                className={`p-2 ml-2 mb-1 rounded-full transition-all duration-200 ${input.trim() ? 'bg-white text-black hover:bg-gray-200' : 'bg-[#424242] text-gray-600 cursor-not-allowed'}`}
-                            >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M12 5l7 7-7 7" /></svg>
-                            </button>
-                        </div>
-                        <div className="text-center text-xs text-gray-500 mt-2 font-normal">
-                            Ziggy can make mistakes. Check important info.
-                        </div>
+                {/* Fixed Input Area (Only when chat is active) */}
+                {!isChatEmpty && (
+                    <div className="absolute bottom-0 left-0 w-full pt-10 pb-6 px-4 bg-gradient-to-t from-[#212121] via-[#212121] to-transparent z-20">
+                        <InputComponent centered={false} />
                     </div>
-                </div>
+                )}
             </main>
         </div>
-
     );
 };
 
