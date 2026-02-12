@@ -266,15 +266,6 @@ const Dashboard = () => {
                 {/* Header - Minimal, Toggle + Model Name */}
                 <header className="h-12 flex items-center px-3 shrink-0 absolute top-0 w-full z-10 bg-transparent">
                     <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-2 text-gray-400 hover:text-white rounded-md transition-colors"
-                            title={isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
                         <button className="flex items-center gap-1.5 px-3 py-2 text-lg font-semibold text-gray-200 hover:bg-[#2f2f2f] rounded-lg transition-colors cursor-pointer">
                             <span className="opacity-90">Ziggy</span>
                             <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
@@ -306,12 +297,12 @@ const Dashboard = () => {
                             </div>
                         </div>
                     ) : (
-                        /* Message Stream - Distinct Boxes */
+                        /* Message Stream - Left Aligned with User Box */
                         <div className="w-full max-w-3xl px-5 pt-20 pb-40 flex flex-col gap-6">
                             {currentChat.messages.map((msg, idx) => (
-                                <div key={idx} className={`w-full flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                    <div className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                                        <div className="flex-shrink-0 flex flex-col relative items-end">
+                                <div key={idx} className="w-full flex justify-start">
+                                    <div className="flex gap-4 w-full max-w-3xl mx-auto">
+                                        <div className="flex-shrink-0 flex flex-col relative items-start">
                                             {msg.role === 'assistant' ? (
                                                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-medium shadow-sm">Z</div>
                                             ) : (
@@ -329,9 +320,9 @@ const Dashboard = () => {
                             ))}
                             {isTyping && (
                                 <div className="w-full py-4">
-                                    <div className="flex gap-4 max-w-3xl">
+                                    <div className="flex gap-4 max-w-3xl mx-auto">
                                         <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-medium">Z</div>
-                                        <div className="flex items-center gap-1.5 h-8 px-4">
+                                        <div className="flex items-center gap-1.5 h-8 px-5 py-3.5 rounded-2xl">
                                             <span className="w-2.5 h-2.5 bg-gray-500 rounded-full animate-pulse"></span>
                                             <span className="w-2.5 h-2.5 bg-gray-500 rounded-full animate-pulse delay-150"></span>
                                             <span className="w-2.5 h-2.5 bg-gray-500 rounded-full animate-pulse delay-300"></span>
