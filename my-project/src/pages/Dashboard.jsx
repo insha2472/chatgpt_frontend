@@ -73,72 +73,82 @@ const MessageItem = ({ msg, isTypewriter = false, typewriterText, userName, getA
     );
 };
 
-const InputComponent = ({ input, setInput, handleSendMessage, isTyping, centered, activeMode, setActiveMode, attachedFiles, setAttachedFiles, fileInputRef, handleFileChange, removeFile }) => (
-    <div className={`w-full max-w-3xl px-4 ${centered ? '' : 'mx-auto'}`}>
-        {!centered && (
-            <div className="flex justify-center mb-4 gap-2">
-                {['search', 'study', 'image'].map(mode => (
-                    <button
-                        key={mode}
-                        onClick={() => setActiveMode(prev => prev === mode ? null : mode)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all border ${activeMode === mode ? 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30 shadow-lg' : 'bg-white/5 text-zinc-500 border-white/10 hover:bg-white/10'}`}
-                    >
-                        <span className="capitalize">{mode}</span>
-                    </button>
-                ))}
-            </div>
-        )}
+const InputComponent = ({ handleSendMessage, isTyping, stopTyping, centered, activeMode, setActiveMode, attachedFiles, setAttachedFiles, fileInputRef, handleFileChange, removeFile }) => {
+    const [localInput, setLocalInput] = useState('');
 
-        {attachedFiles.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
-                {attachedFiles.map((file, i) => (
-                    <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-zinc-300">
-                        <span className="truncate max-w-[150px]">{file.name}</span>
-                        <button onClick={() => removeFile(i)} className="p-0.5 hover:bg-white/10 rounded-full text-zinc-500 hover:text-red-400 transition-colors">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+    const onSendMessage = () => {
+        if (!localInput.trim() && attachedFiles.length === 0) return;
+        handleSendMessage(localInput);
+        setLocalInput('');
+    };
+
+    return (
+        <div className={`w-full max-w-3xl px-4 ${centered ? '' : 'mx-auto'}`}>
+            {!centered && (
+                <div className="flex justify-center mb-4 gap-2">
+                    {['search', 'study', 'image'].map(mode => (
+                        <button
+                            key={mode}
+                            onClick={() => setActiveMode(prev => prev === mode ? null : mode)}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all border ${activeMode === mode ? 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30 shadow-lg' : 'bg-white/5 text-zinc-500 border-white/10 hover:bg-white/10'}`}
+                        >
+                            <span className="capitalize">{mode}</span>
                         </button>
-                    </div>
-                ))}
-            </div>
-        )}
+                    ))}
+                </div>
+            )}
 
-        <div className={`relative flex items-end w-full p-4 glass rounded-[24px] shadow-2xl border border-white/10 focus-within:border-white/20 transition-all group`}>
-            <input
-                type="file"
-                multiple
-                hidden
-                ref={fileInputRef}
-                onChange={handleFileChange}
-            />
-            <button
-                onClick={() => fileInputRef.current?.click()}
-                className="p-2 mr-2 text-zinc-500 hover:text-white rounded-full transition-colors self-end mb-1 hover:bg-white/5"
-            >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.414a4 4 0 00-5.656-5.656l-6.415 6.415a6 6 0 108.486 8.486L20.5 13" /></svg>
-            </button>
-            <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
-                placeholder="Message Ziggy"
-                className="flex-1 max-h-[200px] min-h-[48px] py-3 px-0 bg-transparent border-none focus:ring-0 focus:outline-none outline-none text-white text-base md:text-lg placeholder:text-zinc-500 resize-none overflow-y-auto"
-                rows={1}
-            />
-            <button
-                onClick={handleSendMessage}
-                disabled={!input.trim() && attachedFiles.length === 0 || isTyping}
-                className={`p-2.5 ml-2 mb-1 rounded-full transition-all duration-300 ${input.trim() || attachedFiles.length > 0 ? 'bg-white text-black hover:scale-105 shadow-lg' : 'bg-white/5 text-zinc-700 cursor-not-allowed'}`}
-            >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 12h14M12 5l7 7-7 7" /></svg>
-            </button>
-        </div>
-        {centered && (
-            <div className="text-center text-[11px] text-zinc-500 mt-4 font-normal tracking-tight opacity-60">
-                Ziggy can make mistakes. Check important info.
+            {attachedFiles.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                    {attachedFiles.map((file, i) => (
+                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-zinc-300">
+                            <span className="truncate max-w-[150px]">{file.name}</span>
+                            <button onClick={() => removeFile(i)} className="p-0.5 hover:bg-white/10 rounded-full text-zinc-500 hover:text-red-400 transition-colors">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            <div className={`relative flex items-end w-full p-4 glass rounded-[24px] shadow-2xl border border-white/10 focus-within:border-white/20 transition-all group`}>
+                <input
+                    type="file"
+                    multiple
+                    hidden
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                />
+                <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-2 mr-2 text-zinc-500 hover:text-white rounded-full transition-colors self-end mb-1 hover:bg-white/5"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.414a4 4 0 00-5.656-5.656l-6.415 6.415a6 6 0 108.486 8.486L20.5 13" /></svg>
+                </button>
+                <textarea
+                    value={localInput}
+                    onChange={(e) => setLocalInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onSendMessage(); } }}
+                    placeholder="Message Ziggy"
+                    className="flex-1 max-h-[200px] min-h-[48px] py-3 px-0 bg-transparent border-none focus:ring-0 focus:outline-none outline-none text-white text-base md:text-lg placeholder:text-zinc-500 resize-none overflow-y-auto"
+                    rows={1}
+                />
+                <button
+                    onClick={onSendMessage}
+                    disabled={!localInput.trim() && attachedFiles.length === 0 || isTyping}
+                    className={`p-2.5 ml-2 mb-1 rounded-full transition-all duration-300 ${localInput.trim() || attachedFiles.length > 0 ? 'bg-white text-black hover:scale-105 shadow-lg' : 'bg-white/5 text-zinc-700 cursor-not-allowed'}`}
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 12h14M12 5l7 7-7 7" /></svg>
+                </button>
             </div>
-        )}
-    </div>
-);
+            {centered && (
+                <div className="text-center text-[11px] text-zinc-500 mt-4 font-normal tracking-tight opacity-60">
+                    Ziggy can make mistakes. Check important info.
+                </div>
+            )}
+        </div>
+    );
+};
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -146,7 +156,6 @@ const Dashboard = () => {
     const { logout } = useAuth();
     const [history, setHistory] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
-    const [input, setInput] = useState('');
     const [showProfile, setShowProfile] = useState(false);
     const [activeMenuId, setActiveMenuId] = useState(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -161,13 +170,34 @@ const Dashboard = () => {
     const [typewriterText, setTypewriterText] = useState("");
     const fileInputRef = useRef(null);
     const messagesEndRef = useRef(null);
+    const scrollAreaRef = useRef(null);
+    const abortControllerRef = useRef(null);
+    const isStoppingRef = useRef(false);
 
     const isChatEmpty = !currentChat || (currentChat.id === 'temp' && currentChat.messages.length === 0);
 
-    // Scroll to bottom
+    // Smart Scroll to bottom logic
+    const scrollToBottom = (force = false) => {
+        if (!scrollAreaRef.current) return;
+        const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
+        const isAtBottom = scrollHeight - scrollTop - clientHeight < 150;
+        if (force || isAtBottom) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        scrollToBottom();
     }, [currentChat?.messages, typewriterText]);
+
+    const stopTyping = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+        }
+        isStoppingRef.current = true;
+        setIsTyping(false);
+    };
 
     // Load history and user data
     useEffect(() => {
@@ -223,7 +253,6 @@ const Dashboard = () => {
     const handleNewChat = () => {
         if (currentChat && currentChat.messages.length > 0) fetchHistory();
         setCurrentChat(null);
-        setInput('');
         setAttachedFiles([]);
         setActiveMode(null);
         setTypewriterText("");
@@ -239,23 +268,25 @@ const Dashboard = () => {
         setAttachedFiles((prev) => prev.filter((_, i) => i !== index));
     };
 
-    const handleSendMessage = async () => {
-        if (!input.trim() && attachedFiles.length === 0) return;
-        const userMsg = { role: 'user', content: input, files: attachedFiles.map(f => ({ name: f.name, type: f.type })) };
+    const handleSendMessage = async (text) => {
+        if (!text.trim() && attachedFiles.length === 0) return;
+        const userMsg = { role: 'user', content: text, files: attachedFiles.map(f => ({ name: f.name, type: f.type })) };
         const token = localStorage.getItem('access_token');
         let session_id = currentChat?.id;
-        const tempChat = currentChat ? { ...currentChat, messages: [...currentChat.messages, userMsg] } : { id: 'temp', title: input.substring(0, 30), messages: [userMsg] };
+        const tempChat = currentChat ? { ...currentChat, messages: [...currentChat.messages, userMsg] } : { id: 'temp', title: text.substring(0, 30), messages: [userMsg] };
         setCurrentChat(tempChat);
-        setInput('');
         setAttachedFiles([]);
         setIsTyping(true);
         setTypewriterText("");
+        isStoppingRef.current = false;
+        abortControllerRef.current = new AbortController();
+
         try {
             if (!session_id || session_id === 'temp') {
                 const sessionRes = await fetch('http://127.0.0.1:8000/chat/history', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ title: input.substring(0, 30) || "New Chat" })
+                    body: JSON.stringify({ title: text.substring(0, 30) || "New Chat" })
                 });
                 if (sessionRes.ok) {
                     const sessionData = await sessionRes.json();
@@ -279,6 +310,7 @@ const Dashboard = () => {
                     message: userMsg.content + (attachedFiles.length > 0 ? ` (Attached files: ${attachedFiles.map(f => f.name).join(", ")})` : ""),
                     system_prompt: `You are Ziggy, a helpful AI assistant. The user's name is ${userName}. ${activeMode === 'search' ? 'Current mode: SEARCH.' : activeMode === 'study' ? 'Current mode: STUDY.' : activeMode === 'image' ? 'Current mode: IMAGE GENERATION.' : ''}`
                 }),
+                signal: abortControllerRef.current.signal
             });
             if (!aiRes.ok) throw new Error('AI failed');
             const aiData = await aiRes.json();
@@ -286,11 +318,12 @@ const Dashboard = () => {
             setIsTyping(false);
             let currentText = "";
             for (let i = 0; i < fullResponse.length; i++) {
+                if (isStoppingRef.current) break;
                 currentText += fullResponse[i];
                 setTypewriterText(currentText);
                 await new Promise(r => setTimeout(r, 10));
             }
-            const assistantMsg = { role: 'assistant', content: fullResponse };
+            const assistantMsg = { role: 'assistant', content: isStoppingRef.current ? currentText : fullResponse };
             const finalChat = { ...tempChat, messages: [...tempChat.messages, assistantMsg] };
             setCurrentChat(finalChat);
             setTypewriterText("");
@@ -300,11 +333,18 @@ const Dashboard = () => {
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(assistantMsg)
             });
+            isStoppingRef.current = false;
         } catch (err) {
+            if (err.name === 'AbortError') {
+                console.log('Request aborted');
+                return;
+            }
             console.error(err);
             setIsTyping(false);
             const errMsg = { role: 'assistant', content: "Ziggy had a hiccup! ⚡️ Try again?" };
             setCurrentChat(prev => ({ ...prev, messages: prev ? [...prev.messages, errMsg] : [errMsg] }));
+        } finally {
+            abortControllerRef.current = null;
         }
     };
 
@@ -508,7 +548,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Content Area */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth flex flex-col w-full h-full pb-32">
+                <div ref={scrollAreaRef} className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth flex flex-col w-full h-full pb-40">
                     {isChatEmpty ? (
                         <div className="flex-1 flex flex-col items-center justify-center p-8 w-full max-w-3xl mx-auto">
                             <div className="w-20 h-20 bg-white/5 backdrop-blur-3xl rounded-3xl flex items-center justify-center shadow-2xl mb-8 border border-white/10 group hover:scale-110 transition-transform duration-500">
@@ -530,10 +570,9 @@ const Dashboard = () => {
 
                             {/* Centered Input */}
                             <InputComponent
-                                input={input}
-                                setInput={setInput}
                                 handleSendMessage={handleSendMessage}
                                 isTyping={isTyping}
+                                stopTyping={stopTyping}
                                 centered={true}
                                 activeMode={activeMode}
                                 setActiveMode={setActiveMode}
@@ -549,7 +588,7 @@ const Dashboard = () => {
                                 {["Plan a trip", "Help me write", "Summarize text", "Code something"].map((text, i) => (
                                     <button
                                         key={i}
-                                        onClick={() => setInput(text)}
+                                        onClick={() => handleSendMessage(text)}
                                         className="p-4 bg-white/5 backdrop-blur-xl border border-white/5 hover:bg-white/10 rounded-2xl text-left transition-all hover:scale-[1.02] shadow-sm group"
                                     >
                                         <div className="text-[13px] font-semibold text-zinc-400 group-hover:text-white transition-colors">{text}</div>
@@ -591,11 +630,21 @@ const Dashboard = () => {
                 {/* Input Area (Bottom Fixed Only when chat is active) */}
                 {!isChatEmpty && (
                     <div className="absolute bottom-0 left-0 w-full pt-10 pb-6 px-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-20">
+                        {isTyping && (
+                            <div className="flex justify-center mb-4">
+                                <button
+                                    onClick={stopTyping}
+                                    className="flex items-center gap-2 px-4 py-2 bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-xl text-zinc-300 hover:text-white hover:bg-white/5 transition-all text-xs font-bold shadow-2xl"
+                                >
+                                    <svg className="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+                                    Stop Generation
+                                </button>
+                            </div>
+                        )}
                         <InputComponent
-                            input={input}
-                            setInput={setInput}
                             handleSendMessage={handleSendMessage}
                             isTyping={isTyping}
+                            stopTyping={stopTyping}
                             centered={false}
                             activeMode={activeMode}
                             setActiveMode={setActiveMode}
