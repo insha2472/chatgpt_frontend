@@ -11,29 +11,16 @@ const Home = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [activeMode, setActiveMode] = useState(null); // 'search', 'study', 'image'
   const fileInputRef = useRef(null);
-  const messagesEndRef = useRef(null);
-  const scrollAreaRef = useRef(null);
   const abortControllerRef = useRef(null);
   const isStoppingRef = useRef(false);
 
   // Smart Scroll to bottom logic
-  const scrollToBottom = (force = false) => {
-    if (!scrollAreaRef.current) return;
-    const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 150;
-    if (force || isAtBottom) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   useEffect(() => {
     const storedName = localStorage.getItem('user_name');
     if (storedName) setUserName(storedName);
   }, []);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
 
   const stopTyping = () => {
     if (abortControllerRef.current) {
@@ -222,7 +209,7 @@ const Home = () => {
     <div className="flex flex-col w-full bg-transparent relative h-screen overflow-hidden">
       <div className="flex-1 flex flex-col relative w-full h-full">
 
-        <div ref={scrollAreaRef} className={`flex-1 flex flex-col items-center px-4 relative ${messages.length === 0 ? "justify-center" : "justify-start"} overflow-y-auto custom-scrollbar h-full`}>
+        <div className={`flex-1 flex flex-col items-center px-4 relative ${messages.length === 0 ? "justify-center" : "justify-start"} overflow-y-auto custom-scrollbar h-full`}>
           <div className="w-full max-w-5xl">
             {messages.length === 0 ? (
               <>
@@ -279,7 +266,6 @@ const Home = () => {
                       </div>
                     </div>
                   )}
-                  <div ref={messagesEndRef} />
                 </div>
                 <div className="sticky bottom-8 w-full max-w-3xl mx-auto z-50">
                   {isTyping && (

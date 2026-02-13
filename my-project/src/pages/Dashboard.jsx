@@ -169,26 +169,10 @@ const Dashboard = () => {
     const [activeMode, setActiveMode] = useState(null);
     const [typewriterText, setTypewriterText] = useState("");
     const fileInputRef = useRef(null);
-    const messagesEndRef = useRef(null);
-    const scrollAreaRef = useRef(null);
     const abortControllerRef = useRef(null);
     const isStoppingRef = useRef(false);
 
     const isChatEmpty = !currentChat || (currentChat.id === 'temp' && currentChat.messages.length === 0);
-
-    // Smart Scroll to bottom logic
-    const scrollToBottom = (force = false) => {
-        if (!scrollAreaRef.current) return;
-        const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
-        const isAtBottom = scrollHeight - scrollTop - clientHeight < 150;
-        if (force || isAtBottom) {
-            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }
-    };
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [currentChat?.messages, typewriterText]);
 
     const stopTyping = () => {
         if (abortControllerRef.current) {
@@ -548,7 +532,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Content Area */}
-                <div ref={scrollAreaRef} className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth flex flex-col w-full h-full pb-40">
+                <div className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth flex flex-col w-full h-full pb-40">
                     {isChatEmpty ? (
                         <div className="flex-1 flex flex-col items-center justify-center p-8 w-full max-w-3xl mx-auto">
                             <div className="w-20 h-20 bg-white/5 backdrop-blur-3xl rounded-3xl flex items-center justify-center shadow-2xl mb-8 border border-white/10 group hover:scale-110 transition-transform duration-500">
@@ -622,7 +606,6 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             )}
-                            <div ref={messagesEndRef} className="h-px w-full" />
                         </div>
                     )}
                 </div>
