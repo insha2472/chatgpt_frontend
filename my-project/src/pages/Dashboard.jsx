@@ -399,13 +399,28 @@ const Dashboard = () => {
     return (
         <div className="flex h-[calc(100vh-80px)] w-full bg-transparent text-gray-100 font-sans overflow-hidden relative">
 
+            {/* Backdrop for mobile */}
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[45] md:hidden animate-in fade-in duration-300"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
             <aside
-                className={`flex-shrink-0 bg-black/40 backdrop-blur-3xl border-r border-white/5 flex flex-col h-full transition-all duration-300 ease-in-out z-50 overflow-hidden ${isSidebarOpen ? 'w-[280px]' : 'w-0'}`}
+                className={`fixed inset-y-0 left-0 md:relative flex-shrink-0 bg-[#0a0a0a] md:bg-black/40 backdrop-blur-3xl border-r border-white/5 flex flex-col h-screen md:h-full transition-all duration-300 ease-in-out z-[150] md:z-50 overflow-hidden 
+                ${isSidebarOpen ? 'w-[280px] translate-x-0 shadow-2xl' : 'w-0 -translate-x-full md:translate-x-0 md:w-0'}`}
             >
                 <div className="flex flex-col h-full w-[280px] relative">
                     {/* Sidebar Header */}
-                    <div className="p-4 flex items-center justify-between gap-2 border-b border-white/5">
+                    <div className="p-5 flex items-center justify-between gap-2 border-b border-white/5 md:pt-4">
+                        <div className="md:hidden flex items-center gap-2 mb-2 w-full">
+                            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                                <ZiggyMascot className="w-6 h-6" pulse={false} />
+                            </div>
+                            <span className="text-lg font-bold">Ziggy History</span>
+                        </div>
                         <button
                             onClick={handleNewChat}
                             className="flex-1 flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold border border-white/5 group"
@@ -646,30 +661,30 @@ const Dashboard = () => {
 
             {/* Settings Modal */}
             {isSettingsOpen && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
-                    <div className="bg-[#171717] w-full max-w-2xl rounded-[32px] border border-white/10 shadow-2xl flex flex-col h-[520px] overflow-hidden">
-                        <div className="flex items-center justify-between px-8 py-6 border-b border-white/5 shrink-0">
+                <div className="fixed inset-0 z-[200] flex items-center justify-center md:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-[#171717] w-full max-w-2xl h-full md:h-[520px] md:rounded-[32px] border-b md:border border-white/10 shadow-2xl flex flex-col overflow-hidden">
+                        <div className="flex items-center justify-between px-6 md:px-8 py-5 md:py-6 border-b border-white/5 shrink-0">
                             <h2 className="text-xl font-bold text-white tracking-tight">Settings</h2>
                             <button onClick={() => setIsSettingsOpen(false)} className="p-2 text-zinc-500 hover:text-white hover:bg-white/5 rounded-full transition-all">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>
-                        <div className="flex flex-1 overflow-hidden">
-                            <div className="w-52 border-r border-white/5 py-4 shrink-0 bg-black/20">
+                        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+                            <div className="flex md:flex-col overflow-x-auto md:overflow-y-auto border-b md:border-b-0 md:border-r border-white/5 py-1 md:py-4 shrink-0 bg-black/20 no-scrollbar">
                                 {['general', 'account', 'data'].map((tab) => (
                                     <button
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
-                                        className={`w-full text-left px-8 py-3 text-[13px] transition-all capitalize ${activeTab === tab ? 'bg-white/5 text-white font-bold border-r-2 border-indigo-500' : 'text-zinc-500 hover:text-zinc-300'}`}
+                                        className={`whitespace-nowrap px-6 md:px-8 py-3.5 md:py-3 text-[13px] transition-all capitalize ${activeTab === tab ? 'bg-white/5 text-white font-bold border-b-2 md:border-b-0 md:border-r-2 border-indigo-500' : 'text-zinc-500 hover:text-zinc-300'}`}
                                     >
                                         {tab}
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
+                            <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
                                 {activeTab === 'general' && (
                                     <div className="space-y-8">
-                                        <div className="flex items-center justify-between">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                             <div>
                                                 <div className="text-sm font-bold text-white">Theme</div>
                                                 <div className="text-xs text-zinc-500 mt-1">Customize your visual experience</div>
@@ -677,7 +692,7 @@ const Dashboard = () => {
                                             <select
                                                 value={theme}
                                                 onChange={(e) => setTheme(e.target.value.toLowerCase())}
-                                                className="bg-black/40 border border-white/10 rounded-xl py-2 px-4 text-[13px] text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer"
+                                                className="w-full sm:w-auto bg-black/40 border border-white/10 rounded-xl py-2.5 px-4 text-[13px] text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer"
                                             >
                                                 <option value="system">System</option>
                                                 <option value="light">Light</option>
