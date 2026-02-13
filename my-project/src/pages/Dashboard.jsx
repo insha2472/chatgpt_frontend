@@ -193,7 +193,7 @@ const Dashboard = () => {
             }
             try {
                 console.log("Fetching history with token:", token ? "Token present" : "No token");
-                const response = await fetch('http://127.0.0.1:8000/chat/history', {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE}/chat/history`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -224,7 +224,7 @@ const Dashboard = () => {
         const token = localStorage.getItem('access_token');
         if (!token) return;
         try {
-            const response = await fetch('http://127.0.0.1:8000/chat/history', {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE}/chat/history`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
@@ -267,7 +267,7 @@ const Dashboard = () => {
 
         try {
             if (!session_id || session_id === 'temp') {
-                const sessionRes = await fetch('http://127.0.0.1:8000/chat/history', {
+                const sessionRes = await fetch(`${import.meta.env.VITE_API_BASE}/chat/history`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ title: text.substring(0, 30) || "New Chat" })
@@ -279,12 +279,12 @@ const Dashboard = () => {
                     setHistory(prev => [sessionData, ...prev]);
                 }
             }
-            await fetch(`http://127.0.0.1:8000/chat/history/${session_id}/messages`, {
+            await fetch(`${import.meta.env.VITE_API_BASE}/chat/history/${session_id}/messages`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(userMsg)
             });
-            const aiRes = await fetch('http://127.0.0.1:8000/ask', {
+            const aiRes = await fetch(`${import.meta.env.VITE_API_BASE}/ask`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -312,7 +312,7 @@ const Dashboard = () => {
             setCurrentChat(finalChat);
             setTypewriterText("");
             setHistory(prev => prev.map(c => c.id === session_id ? { ...c, last_msg: assistantMsg.content } : c));
-            await fetch(`http://127.0.0.1:8000/chat/history/${session_id}/messages`, {
+            await fetch(`${import.meta.env.VITE_API_BASE}/chat/history/${session_id}/messages`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(assistantMsg)
@@ -337,7 +337,7 @@ const Dashboard = () => {
     const loadChat = async (chat) => {
         const token = localStorage.getItem('access_token');
         try {
-            const res = await fetch(`http://127.0.0.1:8000/chat/history/${chat.id}/messages`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE}/chat/history/${chat.id}/messages`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -353,7 +353,7 @@ const Dashboard = () => {
         if (!window.confirm("Delete this chat?")) return;
         const token = localStorage.getItem('access_token');
         try {
-            await fetch(`http://127.0.0.1:8000/chat/history/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+            await fetch(`${import.meta.env.VITE_API_BASE}/chat/history/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
             setHistory(prev => prev.filter(c => c.id !== id));
             if (currentChat?.id === id) setCurrentChat(null);
         } catch (err) { console.error(err); }
@@ -366,7 +366,7 @@ const Dashboard = () => {
         if (!newTitle) return;
         const token = localStorage.getItem('access_token');
         try {
-            const res = await fetch(`http://127.0.0.1:8000/chat/history/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE}/chat/history/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ title: newTitle })

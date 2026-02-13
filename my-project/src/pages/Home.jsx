@@ -56,7 +56,7 @@ const Home = () => {
     try {
       let session_id = null;
       if (token) {
-        const sessRes = await fetch("http://127.0.0.1:8000/chat/history", {
+        const sessRes = await fetch(`${import.meta.env.VITE_API_BASE}/chat/history`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
           body: JSON.stringify({ title: text.substring(0, 30) || "Home Chat" })
@@ -64,7 +64,7 @@ const Home = () => {
         if (sessRes.ok) {
           const sessData = await sessRes.json();
           session_id = sessData.id;
-          await fetch(`http://127.0.0.1:8000/chat/history/${session_id}/messages`, {
+          await fetch(`${import.meta.env.VITE_API_BASE}/chat/history/${session_id}/messages`, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify(userMessage)
@@ -72,7 +72,7 @@ const Home = () => {
         }
       }
 
-      const response = await fetch("http://127.0.0.1:8000/ask", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const Home = () => {
       setMessages((prev) => [...prev, assistantMessage]);
 
       if (token && session_id) {
-        await fetch(`http://127.0.0.1:8000/chat/history/${session_id}/messages`, {
+        await fetch(`${import.meta.env.VITE_API_BASE}/chat/history/${session_id}/messages`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
           body: JSON.stringify(assistantMessage)
